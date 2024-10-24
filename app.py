@@ -42,10 +42,12 @@ def calculateQuests(data):
     player_quest_set = {}
     for player in players:
         player_quest_set[player[0]] = set(data[player[0]]["quests"])
-    # Get all fnished quests
+    # Get all finished quests
     all_finished_quests = set()
     for quest_set in player_quest_set.values():
         all_finished_quests.update(quest_set)
+    # Filter out an Mini-Quests
+    all_finished_quests = set(filter(lambda name: not name.startswith("Mini-Quest"), all_finished_quests))
     # find quests people didn't do
     for player in players:
         player_quest_set[player[0]] = all_finished_quests.difference(player_quest_set[player[0]])
