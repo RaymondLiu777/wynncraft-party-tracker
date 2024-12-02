@@ -75,7 +75,7 @@ def calculateQuests(data):
     # Get playable quests
     playable_quests = {}
     for quest, lvl_req in all_quests.items():
-        if(quest not in all_finished_quests and lvl_req <= min_level):
+        if(quest not in all_finished_quests and lvl_req <= min_level and lvl_req >= min_level - 15):
             playable_quests[quest] = {"level-req": lvl_req}
     return {"players": player_quest_set, "master": unfinished_quests, "recommended": playable_quests}
     
