@@ -38,7 +38,13 @@ def getPlayerData():
     return data        
 
 def calculateQuests(data):
-    # Get quest data
+    # Get general quest data
+    all_quests = {}
+    with open('quests.csv', mode ='r')as file:
+        csvFile = csv.reader(file)
+        for lines in csvFile:
+            all_quests[lines[0]] = int(lines[1])
+    # Get player quest data
     player_quest_set = {}
     for player in players:
         player_quest_set[player[0]] = set(data[player[0]]["quests"])
@@ -59,13 +65,18 @@ def calculateQuests(data):
     min_level = 120
     for player in players:
         min_level = min(min_level, data[player[0]]["level"])
+    # Filter out any quests that are more than 15 below min level
+    remove_quests = []
+    for quest in unfinished_quests:
+        if all_quests[quest] < min_level - 15:
+            remove_quests.append(quest)
+    for quest in remove_quests:
+        unfinished_quests.remove(quest)
     # Get playable quests
     playable_quests = {}
-    with open('quests.csv', mode ='r')as file:
-        csvFile = csv.reader(file)
-        for lines in csvFile:
-            if(lines[0] not in all_finished_quests and int(lines[1]) <= min_level):
-                playable_quests[lines[0]] = {"level-req": lines[1]}
+    for quest, lvl_req in all_quests.items():
+        if(quest not in all_finished_quests and lvl_req <= min_level):
+            playable_quests[quest] = {"level-req": lvl_req}
     return {"players": player_quest_set, "master": unfinished_quests, "recommended": playable_quests}
     
 @app.route("/")
