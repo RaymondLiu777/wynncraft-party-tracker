@@ -1,0 +1,13 @@
+.status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 0.5rem;
+}
+.online {
+    background-color: rgb(0, 128, 0);
+}
+.offline {
+    background-color: rgb(175, 0, 0);
+}

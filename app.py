@@ -31,10 +31,16 @@ def getPlayerData():
         response = requests.get(f'https://api.wynncraft.com/v3/player/{player[1]}/characters/{player[2]}')
         if(int(response.headers["RateLimit-Remaining"]) < 10):
             raise RateLimitException(response.headers["RateLimit-Reset"])
+        online_response = requests.get(f'https://api.wynncraft.com/v3/player/{player[1]}')
+        if(int(online_response.headers["RateLimit-Remaining"]) < 10):
+            raise RateLimitException(response.headers["RateLimit-Reset"])
+        # print(online_response.json())
+        # print(online_response.headers["Cache-Control"])
         data[player[0]] = response.json()
         data[player[0]]["Expires"] = response.headers["Expires"]
         data[player[0]]["RateLimit-Remaining"] = response.headers["RateLimit-Remaining"]
         data[player[0]]["RateLimit-Reset"] = response.headers["RateLimit-Reset"]
+        data[player[0]]["Online"] = online_response.json()["online"] and online_response.json()["activeCharacter"] == player[2]
     return data        
 
 def calculateQuests(data):
